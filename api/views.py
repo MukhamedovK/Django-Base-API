@@ -14,6 +14,10 @@ class UsersAPI(APIView):
     
     
     def post(self, request):
+        password = request.data.get("password")
+        if len(password) < 8:
+            return Response({"error": "The password must be at least 8 characters long!"}, status=status.HTTP_400_BAD_REQUEST)
+        
         serializer = UsersAPISerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
