@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     "corsheaders",
 ]
 
+AUTH_USER_MODEL = 'api.User'
+
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
@@ -171,7 +173,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "django_api.urls"
+ROOT_URLCONF = "core.urls"
 
 TEMPLATES = [
     {
@@ -189,7 +191,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "django_api.wsgi.application"
+WSGI_APPLICATION = "core.wsgi.application"
 
 
 # Database

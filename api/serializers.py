@@ -7,7 +7,7 @@ from .models import User
 class UsersAPISerializer(ModelSerializer):
     class Meta:
         model = User
-        exclude = ['password', 'first_name', 'last_name', 'groups', 'user_permissions', 'date_joined']
+        exclude = ['password', 'first_name', 'last_name', 'groups', 'user_permissions', 'date_joined', 'is_superuser']
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
