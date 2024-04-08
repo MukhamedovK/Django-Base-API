@@ -1,11 +1,11 @@
 from django.contrib import admin
 
-from .models import User, Order, Product, Category, Filial, Report, Vacancy, Warehouse, Client
+from .models import User, Order, Product, Category, Filial, Report, Vacancy, Warehouse
 
 
 @admin.register(User)
 class UsersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'email', 'status']
+    list_display = ['id', 'username', 'email', 'status', 'is_superuser']
 
 
 @admin.register(Order)
@@ -25,7 +25,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Filial)
 class FilialAdmin(admin.ModelAdmin):
-    list_display = ['name', 'address', 'work_time', 'phone']
+    list_display = ['name', 'address', 'work_week', 'open_at', 'close_at', 'phone']
 
 
 @admin.register(Report)
@@ -33,21 +33,20 @@ class ReportsAdmin(admin.ModelAdmin):
     list_display = ['user', 'short_message']
 
     def short_message(self, report):
+        msg = report.message
+        if len(msg) < 25:
+            return report.message[:25]
         return f"{report.message[:25]}..."
+    
     short_message.short_description = 'Short Message'
 
 
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
-    list_display = ['vacansy', 'need_status']
+    list_display = ['vacancy', 'need_status']
 
 
-# @admin.register(Warehouse)
-# class WarehouseAdmin(admin.ModelAdmin):
-#     list_display = ['']
-
-
-# @admin.register(Client)
-# class ClientAdmin(admin.ModelAdmin):
-#     list_display = ['']
+@admin.register(Warehouse)
+class WarehouseAdmin(admin.ModelAdmin):
+    list_display = ['snack', 'purchased_price', 'sold_price', 'stock']
 
