@@ -7,6 +7,21 @@ from .utils import get_template, post_template, put_template, delete_template
 from . import serializers
 
 
+class RouterAPI(APIView):
+    def get(self, request):
+        routes = [{
+            "users": "/users",
+            "categories": "/categories",
+            "products": "/products",
+            "filials": "/filials",
+            "vacancys": "/vacancys",
+            "warehouse": "/warehouse",
+            "reports": "/reports",
+            "orders": "/orders"
+        }]
+        return Response({"API routes": routes}, status=status.HTTP_200_OK)
+
+
 class UsersAPI(APIView):
     serializer = serializers.UsersAPISerializer
     def get(self, request):
