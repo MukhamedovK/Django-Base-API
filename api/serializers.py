@@ -1,7 +1,8 @@
-from rest_framework.serializers import ModelSerializer, IntegerField
+from rest_framework.serializers import ModelSerializer
 from datetime import datetime
 
-from .models import User, Filial, Category, Product, Order, Report, Vacancy, Warehouse
+from .models import Filial, Category, Product, Order, Report, Vacancy, Warehouse
+from accounts.models import User
 
 
 class UsersAPISerializer(ModelSerializer):
@@ -65,8 +66,6 @@ class ProductAPISerializer(ModelSerializer):
         redata = super().to_representation(instance)
         redata["price"] = f"{redata['price']}$"
         try:
-            # redata['discount'] = f"{redata['discount']}%"
-            # redata['sold_qty'] = f"{redata['sold_qty']}pcs"
             redata["category"] = instance.category.name
         except:
             redata["category"] = instance["category"].name

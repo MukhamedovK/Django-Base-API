@@ -1,11 +1,6 @@
 from django.contrib import admin
 
-from .models import User, Order, Product, Category, Filial, Report, Vacancy, Warehouse
-
-
-@admin.register(User)
-class UsersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'username', 'email', 'status', 'is_superuser']
+from .models import Order, Product, Category, Filial, Report, Vacancy, Warehouse
 
 
 @admin.register(Order)

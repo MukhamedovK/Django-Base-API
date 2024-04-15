@@ -1,30 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-
-class UserStatus(models.TextChoices):
-    USER = "user", "User"
-    CHEF = "chef", "Chef"
-    ADMIN = "admin", "Admin"
+from accounts.models import User
 
 
 class OrderStatus(models.TextChoices):
     PENDING = "pending", "Pending"
     DELIVERING = "delivering", "Delivering"
     SUCCESS = "success", "Success"
-
-
-class User(AbstractUser):
-    name = models.CharField(max_length=200)
-    surname = models.CharField(max_length=200)
-    age = models.PositiveSmallIntegerField(null=True)
-    email = models.EmailField()
-    status = models.CharField(
-        max_length=100, choices=UserStatus.choices, default=UserStatus.USER
-    )
-
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = []
 
 
 class Category(models.Model):
