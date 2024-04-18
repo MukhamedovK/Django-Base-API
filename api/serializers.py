@@ -1,8 +1,11 @@
 from rest_framework.serializers import ModelSerializer
 from datetime import datetime
 
-from .models import Filial, Category, Product, Order, Report, Vacancy, Warehouse
-from accounts.models import User
+from .models import Filial, Category, Product, Order, Report, Vacancy, Warehouse, User
+from environs import Env
+
+env = Env()
+env.read_env()
 
 
 class UsersAPISerializer(ModelSerializer):
@@ -20,6 +23,7 @@ class UsersAPISerializer(ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
+        redata['image'] = f"http://{env.str('DOMEN')}{instance.image.url}"
         try:
             redata["last_login"] = datetime.strftime(
                 instance.last_login, "%d-%m-%Y %H:%M:%S"
@@ -50,29 +54,35 @@ class VacancyAPISerializer(ModelSerializer):
         model = Vacancy
         fields = "__all__"
 
+    def to_representation(self, instance):
+        redata = super().to_representation(instance)
+        redata['image'] = f"http://{env.str('DOMEN')}{instance.image.url}"
+
+        return redata
+
 
 class CategoriesSerializer(ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
 
+    def to_representation(self, instance):
+        redata = super().to_representation(instance)
+        redata['image'] = f"http://{env.str('DOMEN')}{instance.image.url}"
+        
+        return redata
+
 
 class ProductAPISerializer(ModelSerializer):
+    category = CategoriesSerializer()
     class Meta:
         model = Product
         fields = "__all__"
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["price"] = f"{redata['price']}$"
-        try:
-            redata["category"] = instance.category.name
-        except:
-            redata["category"] = instance["category"].name
-
-        if len(redata["description"]) > 75:
-            redata["description"] = f"{redata['description'][:75]}..."
-
+        redata['image'] = f"http://{env.str('DOMEN')}{instance.image.url}"
+        
         return redata
 
 
@@ -89,46 +99,39 @@ class WarehouseAPISerializer(ModelSerializer):
             instance.sold_price += percent_price
             instance.save()
         return instance
+    
+    def to_representation(self, instance):
+        redata = super().to_representation(instance)
+        redata['image'] = f"http://{env.str('DOMEN')}{instance.image.url}"
+        
+        return redata
 
 
 class ReportsAPISerializer(ModelSerializer):
+    user = UsersAPISerializer()
     class Meta:
         model = Report
         fields = "__all__"
 
-    def to_representation(self, instance):
-        redata = super().to_representation(instance)
-        try:
-            redata["user"] = instance.user.username
-        except:
-            redata["user"] = instance["user"].username
-
-        if len(redata["message"]) > 75:
-            redata["message"] = f"{redata['message'][:60]}..."
-
-        return redata
-
 
 class OrdersAPISerializer(ModelSerializer):
+    user = UsersAPISerializer()
+    product = ProductAPISerializer()
+    filial = FilialsAPISerializer()
+
     class Meta:
         model = Order
         fields = "__all__"
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["created_at"] = datetime.strftime(
+        time_format = datetime.strftime(
             instance.created_at, "%a, %d %b %Y, %I:%M %p"
         )
-        redata["updated_at"] = datetime.strftime(
-            instance.updated_at, "%a, %d %b %Y, %I:%M %p"
-        )
-        try:
-            redata["user"] = instance.user.username
-            redata["product"] = instance.product.title
-            redata["filial"] = instance.filial.name
-        except:
-            redata["user"] = instance["user"].username
-            redata["product"] = instance["product"].title
-            redata["filial"] = instance["filial"].name
+        redata['order_created'] = time_format
+        redata['on_order'] = time_format
+        redata['delivering'] = time_format
+        redata['order_delivered'] = time_format
+        redata['payment_success'] = time_format
 
         return redata

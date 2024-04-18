@@ -1,4 +1,25 @@
 from rest_framework import status
+from .models import User
+
+
+def registration_check(formData):
+    username = formData.get("username")
+    email = formData.get("email")
+    password1 = formData.get("password")
+    password2 = formData.get("repeat_password")
+
+    if len(password2) < 8:
+        return {"error": "Password must be at least 8 characters"}
+    if password1 != password2:
+        return {"error": "Passwords don't match"}
+    if User.objects.filter(email=email).exists():
+        return {"error": "Email already taken"}
+    if username.isdigit():
+        return {"error": "Username mustn't contain only numbers"}
+    if User.objects.filter(username=username).exists():
+        return {"error": "Username already taken"}
+
+    return None
 
 
 def get_template(request, modelName, serializerName):

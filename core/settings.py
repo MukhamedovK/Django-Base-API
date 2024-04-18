@@ -30,13 +30,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    "drf_yasg",
     "rest_framework",
-    
     "api",
-    "accounts",
 ]
 
-AUTH_USER_MODEL = "accounts.User"
+AUTH_USER_MODEL = "api.User"
 
 
 JAZZMIN_SETTINGS = {
@@ -154,7 +154,6 @@ JAZZMIN_SETTINGS = {
 
 
 MIDDLEWARE = [
-    "accounts.middleware.AuthRequiredMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",
@@ -236,6 +235,9 @@ if DEBUG == "True":
     STATICFILES_DIRS = [BASE_DIR / "static"]
 else:
     STATIC_ROOT = BASE_DIR / "static"
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
