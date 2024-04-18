@@ -31,7 +31,7 @@ def login_check(formData, serializerName):
     if User.objects.filter(Q(username=username) & Q(password=password)).exists():
         logged_user = User.objects.get(username=username)
         serializer = serializerName(logged_user)
-        return ({"logged": serializer.data}, status.HTTP_200_OK)
+        return ({"data": serializer.data}, status.HTTP_200_OK)
 
     return ({"error": "Username or password is incorrect!"}, status.HTTP_401_UNAUTHORIZED)
 
@@ -46,7 +46,7 @@ def post_template(request, serializerName):
     serializer = serializerName(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        return ({"Added new data": serializer.data}, status.HTTP_201_CREATED)
+        return ({"data": serializer.data}, status.HTTP_201_CREATED)
     return ({"error": serializer.errors}, status.HTTP_204_NO_CONTENT)
 
 
@@ -59,7 +59,7 @@ def put_template(request, modelName, serializerName, data_id):
     if serializer.is_valid():
         serializer.update(instance, serializer.validated_data)
         return (
-            {f"Edited data by id [{data_id}]": serializer.data},
+            {f"data": serializer.data},
             status.HTTP_205_RESET_CONTENT,
         )
 
@@ -71,4 +71,4 @@ def delete_template(request, modelName, data_id):
         return ({"error": "Data does not exists!"}, status.HTTP_204_NO_CONTENT)
 
     modelName.objects.get(id=data_id).delete()
-    return ({"status": f"Deleted data by id [{data_id}]"}, status.HTTP_418_IM_A_TEAPOT)
+    return ({"data": f"Deleted data by id [{data_id}]"}, status.HTTP_418_IM_A_TEAPOT)
