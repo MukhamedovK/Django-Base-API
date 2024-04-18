@@ -1,4 +1,6 @@
 from rest_framework import status
+from django.db.models import Q
+
 from .models import User
 
 
@@ -20,6 +22,18 @@ def registration_check(formData):
         return {"error": "Username already taken"}
 
     return None
+
+
+def login_check(formData, serializerName):
+    username = formData.get("username")
+    password = formData.get("password")
+
+    if User.objects.filter(Q(username=username) & Q(password=password)).exists():
+        logged_user = User.objects.get(username=username)
+        serializer = serializerName(logged_user)
+        return ({"logged": serializer.data}, status.HTTP_200_OK)
+
+    return ({"error": "Username or password is incorrect!"}, status.HTTP_401_UNAUTHORIZED)
 
 
 def get_template(request, modelName, serializerName):
@@ -44,7 +58,10 @@ def put_template(request, modelName, serializerName, data_id):
     serializer = serializerName(data=request.data)
     if serializer.is_valid():
         serializer.update(instance, serializer.validated_data)
-        return ({f"Edited data by id [{data_id}]": serializer.data}, status.HTTP_205_RESET_CONTENT)
+        return (
+            {f"Edited data by id [{data_id}]": serializer.data},
+            status.HTTP_205_RESET_CONTENT,
+        )
 
     return (serializer.errors, status.HTTP_400_BAD_REQUEST)
 

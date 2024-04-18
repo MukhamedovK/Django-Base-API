@@ -6,7 +6,7 @@ urlpatterns = [
     path('', views.RouterAPI.as_view(), name='routerAPI'),
 
     path('users/', views.UsersAPI.as_view(), name='userAPI'),
-    path('login/', views.UsersAPI.as_view(), name='userAPI'),
+    path('login/', views.LoginUserAPI.as_view(), name='loginAPI'),
 
     path('categories/', views.CategoryAPI.as_view(), name='categoryAPI'),
     path('products/', views.ProductsAPI.as_view(), name='productAPI'),

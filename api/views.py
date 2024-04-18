@@ -2,8 +2,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from django.contrib.auth import authenticate, login, logout
-
 from .models import User, Filial, Category, Product, Vacancy, Warehouse, Order, Report
 from .utils import (
     get_template,
@@ -11,6 +9,7 @@ from .utils import (
     put_template,
     delete_template,
     registration_check,
+    login_check
 )
 from . import serializers
 
@@ -43,13 +42,6 @@ class UsersAPI(APIView):
         error = registration_check(formData=request.data)
         if error is None:
             data, HttpStatus = post_template(request, self.serializer)
-            user = authenticate(
-                request,
-                username=request.data.get("username"),
-                password=request.data.get("password"),
-                email=request.data.get("email"),
-            )
-            login(request, user)
             return Response(data, status=HttpStatus)
         return Response(error)
 
@@ -64,8 +56,12 @@ class UsersAPI(APIView):
         return Response(data, status=HttpStatus)
     
 
-class RegisterUserView(APIView):
-    pass
+class LoginUserAPI(APIView):
+    serializer = serializers.UsersAPISerializer
+    def post(self, request):
+        data, HttpStatus = login_check(request.data, self.serializer)
+        return Response(data, status=HttpStatus)
+
 
 
 class CategoryAPI(APIView):
