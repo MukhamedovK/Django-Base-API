@@ -23,14 +23,14 @@ class RouterAPI(APIView):
     def get(self, request):
         routes = [
             {
-                "users": env.str("DOMEN") + "/users",
-                "categories": env.str("DOMEN") + "/categories",
-                "products": env.str("DOMEN") + "/products",
-                "filials": env.str("DOMEN") + "/filials",
-                "vacancys": env.str("DOMEN") + "/vacancys",
-                "warehouse": env.str("DOMEN") + "/warehouse",
-                "reports": env.str("DOMEN") + "/reports",
-                "orders": env.str("DOMEN") + "/orders",
+                "users": env.str("DOMEN") + "/api/users",
+                "categories": env.str("DOMEN") + "/api/categories",
+                "products": env.str("DOMEN") + "/api/products",
+                "filials": env.str("DOMEN") + "/api/filials",
+                "vacancys": env.str("DOMEN") + "/api/vacancys",
+                "warehouse": env.str("DOMEN") + "/api/warehouse",
+                "reports": env.str("DOMEN") + "/api/reports",
+                "orders": env.str("DOMEN") + "/api/orders",
             }
         ]
         return Response({"API routes": routes}, status=status.HTTP_200_OK)
