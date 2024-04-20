@@ -1,4 +1,4 @@
-from datetime import timezone
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -92,15 +92,15 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         if self.status == OrderStatus.ORDER_CREATED and not self.order_created:
-            self.order_created = timezone.now()
+            self.order_created = datetime.now()
         elif self.status == OrderStatus.ON_ORDER and not self.on_order:
-            self.on_order = timezone.now()
+            self.on_order = datetime.now()
         elif self.status == OrderStatus.DELIVERING and not self.Delivering:
-            self.Delivering = timezone.now()
+            self.Delivering = datetime.now()
         elif self.status == OrderStatus.DELIVERED and not self.order_delivered:
-            self.order_delivered = timezone.now()
+            self.order_delivered = datetime.now()
         elif self.status == OrderStatus.PAYMENT_SUCCESS and not self.payment_success:
-            self.payment_success = timezone.now()
+            self.payment_success = datetime.now()
         super(Order, self).save(*args, **kwargs)
 
 

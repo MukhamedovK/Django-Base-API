@@ -23,7 +23,7 @@ class UsersAPISerializer(ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = f"http://{env.str('DOMEN')}{instance.image.url}"
+        redata["image"] = f"{env.str('DOMEN')}{instance.image.url}"
         try:
             redata["last_login"] = datetime.strftime(
                 instance.last_login, "%d-%m-%Y %H:%M:%S"
@@ -56,7 +56,7 @@ class VacancyAPISerializer(ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = f"http://{env.str('DOMEN')}{instance.image.url}"
+        redata["image"] = f"{env.str('DOMEN')}{instance.image.url}"
 
         return redata
 
@@ -68,7 +68,7 @@ class CategoriesSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = f"http://{env.str('DOMEN')}{instance.image.url}"
+        redata["image"] = f"{env.str('DOMEN')}{instance.image.url}"
 
         return redata
 
@@ -82,7 +82,7 @@ class ProductAPISerializer(ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = f"http://{env.str('DOMEN')}{instance.image.url}"
+        redata["image"] = f"{env.str('DOMEN')}{instance.image.url}"
 
         return redata
 
@@ -103,7 +103,7 @@ class WarehouseAPISerializer(ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = f"http://{env.str('DOMEN')}{instance.image.url}"
+        redata["image"] = f"{env.str('DOMEN')}{instance.image.url}"
 
         return redata
 

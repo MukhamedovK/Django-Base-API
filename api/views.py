@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from environs import Env
+
 from .models import User, Filial, Category, Product, Vacancy, Warehouse, Order, Report
 from .utils import (
     get_template,
@@ -14,18 +16,21 @@ from .utils import (
 from . import serializers
 
 
+env = Env()
+env.read_env()
+
 class RouterAPI(APIView):
     def get(self, request):
         routes = [
             {
-                "users": "/users",
-                "categories": "/categories",
-                "products": "/products",
-                "filials": "/filials",
-                "vacancys": "/vacancys",
-                "warehouse": "/warehouse",
-                "reports": "/reports",
-                "orders": "/orders",
+                "users": f"{env.str("DOMEN")}/users",
+                "categories": f"{env.str("DOMEN")}/categories",
+                "products": f"{env.str("DOMEN")}/products",
+                "filials": f"{env.str("DOMEN")}/filials",
+                "vacancys": f"{env.str("DOMEN")}/vacancys",
+                "warehouse": f"{env.str("DOMEN")}/warehouse",
+                "reports": f"{env.str("DOMEN")}/reports",
+                "orders": f"{env.str("DOMEN")}/orders",
             }
         ]
         return Response({"API routes": routes}, status=status.HTTP_200_OK)
