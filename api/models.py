@@ -12,17 +12,15 @@ class UserStatus(models.TextChoices):
 
 
 class OrderStatus(models.TextChoices):
-    DELIVERED = "delivered", "Order Delivered"
-    ON_ORDER = "on_order", "On Order"
     PAYMENT_SUCCESS = "success", "Payment Success"
     ORDER_CREATED = "created", "Order Created"
+    ON_ORDER = "on_order", "On Order"
+    DELIVERED = "delivered", "Order Delivered"
     DELIVERING = "delivering", "Delivering"
 
 
 class User(AbstractUser):
     image = models.ImageField(upload_to='avatar', default='default_img/avatar.png')
-    name = models.CharField(max_length=200, null=True, blank=True)
-    surname = models.CharField(max_length=200, null=True, blank=True)
     age = models.PositiveSmallIntegerField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
     status = models.CharField(
@@ -80,27 +78,28 @@ class Order(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     filial = models.ForeignKey(Filial, on_delete=models.CASCADE)
     status = models.CharField(
-        max_length=100, choices=OrderStatus.choices, default=OrderStatus.ORDER_CREATED
+        max_length=100, choices=OrderStatus.choices, default=OrderStatus.PAYMENT_SUCCESS
     )
     count = models.PositiveSmallIntegerField(default=1)
     total_price = models.PositiveBigIntegerField()
+    payment_pending = models.BooleanField(default=False)
+    payment_success = models.DateTimeField(null=True, blank=True)
     order_created = models.DateTimeField(auto_now_add=True)
     on_order = models.DateTimeField(null=True, blank=True)
     delivering = models.DateTimeField(null=True, blank=True)
     order_delivered = models.DateTimeField(null=True, blank=True)
-    payment_success = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
+        if self.status == OrderStatus.PAYMENT_SUCCESS and not self.payment_success:
+            self.payment_success = datetime.now()
         if self.status == OrderStatus.ORDER_CREATED and not self.order_created:
             self.order_created = datetime.now()
-        elif self.status == OrderStatus.ON_ORDER and not self.on_order:
+        if self.status == OrderStatus.ON_ORDER and not self.on_order:
             self.on_order = datetime.now()
-        elif self.status == OrderStatus.DELIVERING and not self.Delivering:
+        if self.status == OrderStatus.DELIVERING and not self.Delivering:
             self.Delivering = datetime.now()
-        elif self.status == OrderStatus.DELIVERED and not self.order_delivered:
+        if self.status == OrderStatus.DELIVERED and not self.order_delivered:
             self.order_delivered = datetime.now()
-        elif self.status == OrderStatus.PAYMENT_SUCCESS and not self.payment_success:
-            self.payment_success = datetime.now()
         super(Order, self).save(*args, **kwargs)
 
 

@@ -13,12 +13,11 @@ class UsersAPISerializer(ModelSerializer):
     class Meta:
         model = User
         exclude = [
-            "first_name",
-            "last_name",
             "groups",
             "user_permissions",
             "date_joined",
             "is_superuser",
+            "password",
         ]
 
     def to_representation(self, instance):
@@ -37,6 +36,8 @@ class UsersAPISerializer(ModelSerializer):
 
 
 class FilialsAPISerializer(ModelSerializer):
+    branch_manager = UsersAPISerializer()
+    main_chief = UsersAPISerializer()
     class Meta:
         model = Filial
         fields = "__all__"
@@ -73,20 +74,6 @@ class CategoriesSerializer(ModelSerializer):
         return redata
 
 
-class ProductAPISerializer(ModelSerializer):
-    category = CategoriesSerializer()
-
-    class Meta:
-        model = Product
-        fields = "__all__"
-
-    def to_representation(self, instance):
-        redata = super().to_representation(instance)
-        redata["image"] = env.str('DOMEN') + instance.image.url
-
-        return redata
-
-
 class WarehouseAPISerializer(ModelSerializer):
     class Meta:
         model = Warehouse
@@ -100,6 +87,21 @@ class WarehouseAPISerializer(ModelSerializer):
             instance.sold_price += percent_price
             instance.save()
         return instance
+
+    def to_representation(self, instance):
+        redata = super().to_representation(instance)
+        redata["image"] = env.str('DOMEN') + instance.image.url
+
+        return redata
+
+
+class ProductAPISerializer(ModelSerializer):
+    category = CategoriesSerializer()
+    recipe = WarehouseAPISerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Product
+        fields = "__all__"
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
@@ -127,11 +129,14 @@ class OrdersAPISerializer(ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        time_format = datetime.strftime(instance.created_at, "%a, %d %b %Y, %I:%M %p")
-        redata["order_created"] = time_format
-        redata["on_order"] = time_format
-        redata["delivering"] = time_format
-        redata["order_delivered"] = time_format
-        redata["payment_success"] = time_format
+        redata["order_created"] = datetime.strftime(instance.order_created, "%a, %d %b %Y, %I:%M %p")
+        if instance.on_order:
+            redata["on_order"] = datetime.strftime(instance.on_order, "%a, %d %b %Y, %I:%M %p")
+        if instance.delivering:
+            redata["delivering"] = datetime.strftime(instance.delivering, "%a, %d %b %Y, %I:%M %p")
+        if instance.order_delivered:
+            redata["order_delivered"] = datetime.strftime(instance.order_delivered, "%a, %d %b %Y, %I:%M %p")
+        if instance.payment_success:
+            redata["payment_success"] = datetime.strftime(instance.payment_success, "%a, %d %b %Y, %I:%M %p")
 
         return redata
