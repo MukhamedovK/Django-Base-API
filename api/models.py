@@ -33,7 +33,7 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         self.username.lower()
         if not self.first_name:
-            self.name = self.username.title()
+            self.first_name = self.username.title()
         super().save(*args, **kwargs)
 
 
