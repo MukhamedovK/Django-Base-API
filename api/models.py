@@ -23,6 +23,7 @@ class User(AbstractUser):
     image = models.ImageField(upload_to='avatar', default='default_img/avatar.png')
     age = models.PositiveSmallIntegerField(null=True, blank=True)
     email = models.EmailField(null=True, blank=True)
+    is_activate = models.BooleanField(default=False)
     status = models.CharField(
         max_length=100, choices=UserStatus.choices, default=UserStatus.USER
     )
@@ -106,6 +107,7 @@ class Order(models.Model):
 class Report(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     message = models.TextField()
+    title = models.CharField(max_length=200, default="Report")
     created_at = models.DateTimeField(auto_now_add=True)
 
 

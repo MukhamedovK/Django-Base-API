@@ -3,12 +3,12 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.router_api, name='routerAPI'),
+    # path('', views.router_api, name='routerAPI'),
     path('login/', views.login_user_api, name='loginAPI'),
+    path('registration/', views.create_user_api, name='create-user'),
 
     path('users/', views.users_api, name='userAPI'),
     path('users/<int:user_id>/', views.users_api, name='one-user'),
-    path('users/create/', views.create_user_api, name='create-user'),
     path('users/edit/<int:user_id>/', views.update_user_api, name='user-edit'),
     path('users/delete/<int:user_id>/', views.delete_user_api, name='user-delete'),
 

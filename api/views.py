@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
-
+from drf_yasg.utils import swagger_auto_schema
 from environs import Env
 
 from .models import User, Filial, Category, Product, Vacancy, Warehouse, Order, Report
@@ -21,21 +21,6 @@ env = Env()
 env.read_env()
 
 
-@api_view(['GET'])
-def router_api(request):
-    routes = {
-        "users": env.str("DOMEN") + "api/users",
-        "categories": env.str("DOMEN") + "api/categories",
-        "products": env.str("DOMEN") + "api/products",
-        "filials": env.str("DOMEN") + "api/filials",
-        "vacancys": env.str("DOMEN") + "api/vacancys",
-        "warehouse": env.str("DOMEN") + "api/warehouse",
-        "reports": env.str("DOMEN") + "api/reports",
-        "orders": env.str("DOMEN") + "api/orders",
-    }
-    return Response({"API routes": routes}, status=status.HTTP_200_OK)
-
-
 # USERS API
 @api_view(['GET'])
 def users_api(request, user_id=None):
@@ -47,6 +32,7 @@ def users_api(request, user_id=None):
         users = get_template(request, User, serializer)
         return Response({"users": users}, status=status.HTTP_200_OK)
 
+@swagger_auto_schema(request_body=serializers.UsersAPISerializer, method='POST')
 @api_view(['POST'])
 def create_user_api(request):
     error = registration_check(formData=request.data)
