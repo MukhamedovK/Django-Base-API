@@ -14,6 +14,8 @@ class UsersAPISerializer(ModelSerializer):
         model = User
         exclude = [
             "groups",
+            "first_name",
+            "last_name",
             "user_permissions",
             "date_joined",
             "is_superuser",

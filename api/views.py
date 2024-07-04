@@ -4,6 +4,9 @@ from rest_framework.decorators import api_view
 from drf_yasg.utils import swagger_auto_schema
 from environs import Env
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+
 from .models import User, Filial, Category, Product, Vacancy, Warehouse, Order, Report
 from .utils import (
     get_template,
@@ -23,6 +26,7 @@ env.read_env()
 
 # USERS API
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def users_api(request, user_id=None):
     serializer = serializers.UsersAPISerializer
     if user_id is not None:
@@ -34,6 +38,7 @@ def users_api(request, user_id=None):
 
 @swagger_auto_schema(request_body=serializers.UsersAPISerializer, method='POST')
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_user_api(request):
     error = registration_check(formData=request.data)
     if error is None:
@@ -42,16 +47,19 @@ def create_user_api(request):
     return Response(error)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_user_api(request, user_id):
     data, HttpStatus = put_template(request, User, serializers.UsersAPISerializer, user_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_user_api(request, user_id):
     data, HttpStatus = delete_template(request, User, user_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def login_user_api(request):
     data, HttpStatus = login_check(request.data, serializers.UsersAPISerializer)
     return Response(data, status=HttpStatus)
@@ -59,6 +67,7 @@ def login_user_api(request):
 
 # CATEGORIES API
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def categories_api(request, category_id=None):
     serializer = serializers.CategoriesSerializer
     if category_id is not None:
@@ -69,16 +78,19 @@ def categories_api(request, category_id=None):
         return Response({"categories": categories}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_category_api(request):
     data, HttpStatus = post_template(request, serializers.CategoriesSerializer)
     return Response(data, status=HttpStatus)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_category_api(request, category_id):
     data, HttpStatus = put_template(request, Category, serializers.CategoriesSerializer, category_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_category_api(request, category_id):
     data, HttpStatus = delete_template(request, Category, category_id)
     return Response(data, status=HttpStatus)
@@ -86,6 +98,7 @@ def delete_category_api(request, category_id):
 
 # PRODUCTS API
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def products_api(request, product_id=None):
     serializer = serializers.ProductAPISerializer
     if product_id is not None:
@@ -96,16 +109,19 @@ def products_api(request, product_id=None):
         return Response({"products": products}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_product_api(request):
     data, HttpStatus = post_template(request, serializers.ProductAPISerializer)
     return Response(data, status=HttpStatus)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_product_api(request, product_id):
     data, HttpStatus = put_template(request, Product, serializers.ProductAPISerializer, product_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_product_api(request, product_id):
     data, HttpStatus = delete_template(request, Product, product_id)
     return Response(data, status=HttpStatus)
@@ -113,6 +129,7 @@ def delete_product_api(request, product_id):
 
 # FILIALS API
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def filials_api(request, filial_id=None):
     serializer = serializers.FilialsAPISerializer
     if filial_id is not None:
@@ -123,16 +140,19 @@ def filials_api(request, filial_id=None):
         return Response({"filials": filials}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_filial_api(request):
     data, HttpStatus = post_template(request, serializers.FilialsAPISerializer)
     return Response(data, status=HttpStatus)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_filial_api(request, filial_id):
     data, HttpStatus = put_template(request, Filial, serializers.FilialsAPISerializer, filial_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_filial_api(request, filial_id):
     data, HttpStatus = delete_template(request, Filial, filial_id)
     return Response(data, status=HttpStatus)
@@ -140,6 +160,7 @@ def delete_filial_api(request, filial_id):
 
 # VACANCYS API
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def vacancys_api(request, vacancy_id=None):
     serializer = serializers.VacancyAPISerializer
     if vacancy_id is not None:
@@ -150,16 +171,19 @@ def vacancys_api(request, vacancy_id=None):
         return Response({"vacancys": vacancys}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_vacancy_api(request):
     data, HttpStatus = post_template(request, serializers.VacancyAPISerializer)
     return Response(data, status=HttpStatus)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_vacancy_api(request, vacancy_id):
     data, HttpStatus = put_template(request, Vacancy, serializers.VacancyAPISerializer, vacancy_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_vacancy_api(request, vacancy_id):
     data, HttpStatus = delete_template(request, Vacancy, vacancy_id)
     return Response(data, status=HttpStatus)
@@ -167,6 +191,7 @@ def delete_vacancy_api(request, vacancy_id):
 
 # WAREHOUSE API
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def warehouse_api(request, item_id=None):
     serializer = serializers.WarehouseAPISerializer
     if item_id is not None:
@@ -177,16 +202,19 @@ def warehouse_api(request, item_id=None):
         return Response({"items": items}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_item_api(request):
     data, HttpStatus = post_template(request, serializers.WarehouseAPISerializer)
     return Response(data, status=HttpStatus)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_item_api(request, item_id):
     data, HttpStatus = put_template(request, Warehouse, serializers.WarehouseAPISerializer, item_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_item_api(request, item_id):
     data, HttpStatus = delete_template(request, Warehouse, item_id)
     return Response(data, status=HttpStatus)
@@ -194,6 +222,7 @@ def delete_item_api(request, item_id):
 
 # REPORTS API
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def reports_api(request, report_id=None):
     serializer = serializers.ReportsAPISerializer
     if report_id is not None:
@@ -204,16 +233,19 @@ def reports_api(request, report_id=None):
         return Response({"reports": reports}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_report_api(request):
     data, HttpStatus = post_template(request, serializers.ReportAPISerializer)
     return Response(data, status=HttpStatus)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_report_api(request, message_id):
     data, HttpStatus = put_template(request, Report, serializers.ReportAPISerializer, message_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_report_api(request, message_id):
     data, HttpStatus = delete_template(request, Report, message_id)
     return Response(data, status=HttpStatus)
@@ -221,6 +253,7 @@ def delete_report_api(request, message_id):
 
 # ORDERS API
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def orders_api(request, order_id=None):
     serializer = serializers.OrdersAPISerializer
     if order_id is not None:
@@ -231,16 +264,19 @@ def orders_api(request, order_id=None):
         return Response({"orders": orders}, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_order_api(request):
     data, HttpStatus = post_template(request, serializers.OrdersAPISerializer)
     return Response(data, status=HttpStatus)
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_order_api(request, order_id):
     data, HttpStatus = put_template(request, Order, serializers.OrdersAPISerializer, order_id)
     return Response(data, status=HttpStatus)
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_order_api(request, order_id):
     data, HttpStatus = delete_template(request, Order, order_id)
     return Response(data, status=HttpStatus)

@@ -21,20 +21,17 @@ class OrderStatus(models.TextChoices):
 
 class User(AbstractUser):
     image = models.ImageField(upload_to='avatar', default='default_img/avatar.png')
-    age = models.PositiveSmallIntegerField(null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField(unique=True)
     is_activate = models.BooleanField(default=False)
     status = models.CharField(
         max_length=100, choices=UserStatus.choices, default=UserStatus.USER
     )
 
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['email']
 
     def save(self, *args, **kwargs):
-        self.username.lower()
-        if not self.first_name:
-            self.first_name = self.username.title()
+        self.username = self.username.lower()
         super().save(*args, **kwargs)
 
 
