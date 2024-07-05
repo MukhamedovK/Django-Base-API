@@ -32,12 +32,6 @@ class User(AbstractUser):
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
 
-    def save(self, *args, **kwargs):
-        self.username = self.username.lower()
-        if self.pk is None or 'password' in self.get_dirty_fields():
-            self.password = make_password(self.password)
-        super(User, self).save(*args, **kwargs)
-
 
 class Category(models.Model):
     image = models.ImageField(upload_to='category' , default='default_img/category.png')

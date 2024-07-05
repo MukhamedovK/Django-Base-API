@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from django.contrib.auth.hashers import make_password
 from datetime import datetime
 from environs import Env
 
@@ -22,6 +23,10 @@ class UsersAPISerializer(ModelSerializer):
             "is_staff",
             "is_active",
         ]
+        
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])
+        return super().create(validated_data)
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
