@@ -1,18 +1,18 @@
 from rest_framework import status
-from django.db.models import Q
+from django.contrib.auth.hashers import check_password
 
 from .models import User
 
 
 def registration_check(formData):
     username = formData.get("username")
-    email = formData.get("email")
+    # email = formData.get("email")
     password = formData.get("password")
 
     if len(password) < 8:
         return {"error": "Password must be at least 8 characters"}
-    if User.objects.filter(email=email).exists():
-        return {"error": "Email already taken"}
+    # if User.objects.filter(email=email).exists():
+    #     return {"error": "Email already taken"}
     if username.isdigit():
         return {"error": "Username mustn't contain only numbers"}
     if User.objects.filter(username=username).exists():
@@ -25,12 +25,16 @@ def login_check(formData, serializerName):
     username = formData.get("username")
     password = formData.get("password")
 
-    if User.objects.filter(Q(username=username) & Q(password=password)).exists():
-        logged_user = User.objects.get(username=username)
-        serializer = serializerName(logged_user)
-        return ({"data": serializer.data}, status.HTTP_200_OK)
-
-    return ({"error": "Username or password is incorrect!"}, status.HTTP_401_UNAUTHORIZED)
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return ({"error": "Username is incorrect!"}, status.HTTP_401_UNAUTHORIZED)
+    
+    if check_password(password, user.password):
+        serializer = serializerName(user)
+        return ({"data": "logged"}, status.HTTP_200_OK)
+    else:
+        return ({"error": "Password is incorrect"}, status.HTTP_401_UNAUTHORIZED)
 
 
 def get_template(request, modelName, serializerName):

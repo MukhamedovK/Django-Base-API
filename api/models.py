@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.db import models
+
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.hashers import make_password
 
 
 class UserStatus(models.TextChoices):
@@ -21,19 +23,20 @@ class OrderStatus(models.TextChoices):
 
 class User(AbstractUser):
     image = models.ImageField(upload_to='avatar', default='default_img/avatar.png')
-    username = models.CharField(max_length=150, unique=True, blank=True, null=True)
-    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=150, unique=True)
     is_activate = models.BooleanField(default=False)
     status = models.CharField(
         max_length=100, choices=UserStatus.choices, default=UserStatus.USER
     )
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "username"
     REQUIRED_FIELDS = []
 
     def save(self, *args, **kwargs):
         self.username = self.username.lower()
-        super().save(*args, **kwargs)
+        if self.pk is None or 'password' in self.get_dirty_fields():
+            self.password = make_password(self.password)
+        super(User, self).save(*args, **kwargs)
 
 
 class Category(models.Model):

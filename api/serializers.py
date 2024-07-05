@@ -1,5 +1,4 @@
 from rest_framework.serializers import ModelSerializer
-from django.contrib.auth.hashers import make_password
 from datetime import datetime
 from environs import Env
 
@@ -16,12 +15,12 @@ class UsersAPISerializer(ModelSerializer):
             "groups",
             "first_name",
             "last_name",
+            "email",
             "user_permissions",
             "date_joined",
             "is_superuser",
             "is_staff",
             "is_active",
-            "username"
         ]
 
     def to_representation(self, instance):
