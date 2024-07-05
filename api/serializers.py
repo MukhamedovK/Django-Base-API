@@ -20,7 +20,8 @@ class UsersAPISerializer(ModelSerializer):
             "date_joined",
             "is_superuser",
             "is_staff",
-            "is_active"
+            "is_active",
+            "username"
         ]
 
     def to_representation(self, instance):
