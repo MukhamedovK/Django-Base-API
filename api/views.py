@@ -1,9 +1,13 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate
+from rest_framework.views import APIView
+
 from drf_yasg.utils import swagger_auto_schema
 from environs import Env
 
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 
@@ -22,6 +26,28 @@ from . import serializers
 
 env = Env()
 env.read_env()
+
+
+# LOGIN
+class LoginView(APIView):
+    @swagger_auto_schema(request_body=serializers.LoginSerializer)
+    def post(self, request):
+        error = login_check(request.data)
+        serializer = serializers.LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'data': serializer.data
+            })
+        else:
+            return Response({'error': error}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 # USERS API
@@ -55,14 +81,6 @@ def update_user_api(request, user_id):
 def delete_user_api(request, user_id):
     data, HttpStatus = delete_template(request, User, user_id)
     return Response(data, status=HttpStatus)
-
-@swagger_auto_schema(request_body=serializers.UsersAPISerializer, method='POST')
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def login_user_api(request):
-    data, HttpStatus = login_check(request.data, serializers.UsersAPISerializer)
-    return Response(data, status=HttpStatus)
-
 
 # CATEGORIES API
 @api_view(['GET'])

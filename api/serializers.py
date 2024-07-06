@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
 from datetime import datetime
 from environs import Env
@@ -9,7 +9,13 @@ env = Env()
 env.read_env()
 
 
-class UsersAPISerializer(ModelSerializer):
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+
+class UsersAPISerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = [
@@ -43,7 +49,7 @@ class UsersAPISerializer(ModelSerializer):
         return redata
 
 
-class FilialsAPISerializer(ModelSerializer):
+class FilialsAPISerializer(serializers.ModelSerializer):
     branch_manager = UsersAPISerializer()
     main_chief = UsersAPISerializer()
     class Meta:
@@ -58,7 +64,7 @@ class FilialsAPISerializer(ModelSerializer):
         return redata
 
 
-class VacancyAPISerializer(ModelSerializer):
+class VacancyAPISerializer(serializers.ModelSerializer):
     class Meta:
         model = Vacancy
         fields = "__all__"
@@ -70,7 +76,7 @@ class VacancyAPISerializer(ModelSerializer):
         return redata
 
 
-class CategoriesSerializer(ModelSerializer):
+class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
@@ -82,7 +88,7 @@ class CategoriesSerializer(ModelSerializer):
         return redata
 
 
-class WarehouseAPISerializer(ModelSerializer):
+class WarehouseAPISerializer(serializers.ModelSerializer):
     class Meta:
         model = Warehouse
         fields = "__all__"
@@ -103,7 +109,7 @@ class WarehouseAPISerializer(ModelSerializer):
         return redata
 
 
-class ProductAPISerializer(ModelSerializer):
+class ProductAPISerializer(serializers.ModelSerializer):
     category = CategoriesSerializer()
     recipe = WarehouseAPISerializer(many=True, read_only=True)
 
@@ -118,7 +124,7 @@ class ProductAPISerializer(ModelSerializer):
         return redata
 
 
-class ReportsAPISerializer(ModelSerializer):
+class ReportsAPISerializer(serializers.ModelSerializer):
     user = UsersAPISerializer()
 
     class Meta:
@@ -126,7 +132,7 @@ class ReportsAPISerializer(ModelSerializer):
         fields = "__all__"
 
 
-class OrdersAPISerializer(ModelSerializer):
+class OrdersAPISerializer(serializers.ModelSerializer):
     user = UsersAPISerializer()
     product = ProductAPISerializer()
     filial = FilialsAPISerializer()

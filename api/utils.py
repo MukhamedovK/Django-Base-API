@@ -21,20 +21,17 @@ def registration_check(formData):
     return None
 
 
-def login_check(formData, serializerName):
+def login_check(formData):
     username = formData.get("username")
     password = formData.get("password")
 
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
-        return ({"error": "Username is incorrect!"}, status.HTTP_401_UNAUTHORIZED)
+        return ("Username is incorrect!")
     
-    if check_password(password, user.password):
-        serializer = serializerName(user)
-        return ({"data": "logged"}, status.HTTP_200_OK)
-    else:
-        return ({"error": "Password is incorrect"}, status.HTTP_401_UNAUTHORIZED)
+    if not check_password(password, user.password):
+        return ("Password is incorrect")
 
 
 def get_template(request, modelName, serializerName):
