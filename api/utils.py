@@ -21,17 +21,19 @@ def registration_check(formData):
     return None
 
 
-def login_check(formData):
-    username = formData.get("username")
-    password = formData.get("password")
+def login_check(form_data):
+    username = form_data.get("username")
+    password = form_data.get("password")
 
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
-        return ("Username is incorrect!")
-    
+        return "Username is incorrect!"
+
     if not check_password(password, user.password):
-        return ("Password is incorrect")
+        return "Password is incorrect"
+
+    return None  # No error
 
 
 def get_template(request, modelName, serializerName):

@@ -9,12 +9,6 @@ env = Env()
 env.read_env()
 
 
-
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
-
-
 class UsersAPISerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -29,14 +23,14 @@ class UsersAPISerializer(serializers.ModelSerializer):
             "is_staff",
             "is_active",
         ]
-        
+
     def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
+        validated_data["password"] = make_password(validated_data["password"])
         return super().create(validated_data)
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = env.str('DOMEN') + instance.image.url
+        redata["image"] = env.str("DOMEN") + instance.image.url
         try:
             redata["last_login"] = datetime.strftime(
                 instance.last_login, "%d-%m-%Y %H:%M:%S"
@@ -52,6 +46,7 @@ class UsersAPISerializer(serializers.ModelSerializer):
 class FilialsAPISerializer(serializers.ModelSerializer):
     branch_manager = UsersAPISerializer()
     main_chief = UsersAPISerializer()
+
     class Meta:
         model = Filial
         fields = "__all__"
@@ -71,7 +66,7 @@ class VacancyAPISerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = env.str('DOMEN') + instance.image.url
+        redata["image"] = env.str("DOMEN") + instance.image.url
 
         return redata
 
@@ -83,7 +78,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = env.str('DOMEN') + instance.image.url
+        redata["image"] = env.str("DOMEN") + instance.image.url
 
         return redata
 
@@ -104,7 +99,7 @@ class WarehouseAPISerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = env.str('DOMEN') + instance.image.url
+        redata["image"] = env.str("DOMEN") + instance.image.url
 
         return redata
 
@@ -119,7 +114,7 @@ class ProductAPISerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["image"] = env.str('DOMEN') + instance.image.url
+        redata["image"] = env.str("DOMEN") + instance.image.url
 
         return redata
 
@@ -143,14 +138,24 @@ class OrdersAPISerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata["order_created"] = datetime.strftime(instance.order_created, "%a, %d %b %Y, %I:%M %p")
+        redata["order_created"] = datetime.strftime(
+            instance.order_created, "%a, %d %b %Y, %I:%M %p"
+        )
         if instance.on_order:
-            redata["on_order"] = datetime.strftime(instance.on_order, "%a, %d %b %Y, %I:%M %p")
+            redata["on_order"] = datetime.strftime(
+                instance.on_order, "%a, %d %b %Y, %I:%M %p"
+            )
         if instance.delivering:
-            redata["delivering"] = datetime.strftime(instance.delivering, "%a, %d %b %Y, %I:%M %p")
+            redata["delivering"] = datetime.strftime(
+                instance.delivering, "%a, %d %b %Y, %I:%M %p"
+            )
         if instance.order_delivered:
-            redata["order_delivered"] = datetime.strftime(instance.order_delivered, "%a, %d %b %Y, %I:%M %p")
+            redata["order_delivered"] = datetime.strftime(
+                instance.order_delivered, "%a, %d %b %Y, %I:%M %p"
+            )
         if instance.payment_success:
-            redata["payment_success"] = datetime.strftime(instance.payment_success, "%a, %d %b %Y, %I:%M %p")
+            redata["payment_success"] = datetime.strftime(
+                instance.payment_success, "%a, %d %b %Y, %I:%M %p"
+            )
 
         return redata
